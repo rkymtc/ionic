@@ -1,0 +1,32 @@
+:root {
+  --orange-primary: #ff9e2c;
+  --card-bg: #1e1e1e;
+  --card-bg-light: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --border-radius: 12px;
+}
+
+@mixin card-container {
+  background-color: var(--card-bg, #1e1e1e);
+  border-radius: var(--border-radius, 12px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: box-shadow 0.3s ease, background-color 0.2s ease;
+}
+
+@mixin orange-accent {
+  background-color: var(--orange-primary, #ff9e2c);
+  color: #000000;
+}
+
+@mixin responsive-padding {
+  @media (max-width: 767px) {
+    padding: 12px;
+  }
+  @media (min-width: 768px) {
+    padding: 16px;
+  }
+}
+
+$mobile-breakpoint: 767px; 

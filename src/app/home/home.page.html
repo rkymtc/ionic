@@ -1,0 +1,111 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title class="ion-text-center">
+       Görev Yönetici
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding-bottom">
+  <ion-header collapse="condense">
+    <ion-toolbar color="dark">
+      <ion-title size="large" class="ion-text-center">Görev Yönetici</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="content-container">
+    <div class="add-task-container">
+      <div class="section-header">
+        <h2><ion-icon name="add-circle-outline" color="warning"></ion-icon> Yeni Görev Ekle</h2>
+        <ion-chip color="warning" size="small">
+          <ion-icon name="sync"></ion-icon>
+          <ion-label>Firebase + Yerel Depolama</ion-label>
+        </ion-chip>
+      </div>
+      
+      <div class="task-form">
+        <ion-item class="modern-input">
+          <ion-input
+            [(ngModel)]="taskTitle"
+            placeholder="Ne yapılması gerekiyor?"
+            label="Başlık"
+            label-placement="floating"
+            color="medium"
+          ></ion-input>
+        </ion-item>
+        <ion-item class="modern-input">
+          <ion-textarea
+            [(ngModel)]="taskDescription"
+            placeholder="Açıklama"
+            label="Açıklama"
+            label-placement="floating"
+            rows="2"
+            color="medium"
+          ></ion-textarea>
+        </ion-item>
+        <ion-item class="modern-input">
+          <ion-datetime-button datetime="dueDateTime"></ion-datetime-button>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime 
+                id="dueDateTime" 
+                [(ngModel)]="taskDueDate"
+                presentation="date-time" 
+                prefer-wheel="true"
+                locale="tr-TR"
+                color="warning">
+              </ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+        
+        <div class="form-actions">
+          <ion-button (click)="captureImage()" fill="outline" color="medium" class="modern-button">
+            <ion-icon name="camera-outline" slot="start"></ion-icon>
+            Resim Ekle
+          </ion-button>
+          <ion-button (click)="addTask()" color="warning" class="modern-button">
+            <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+            Görev Ekle
+          </ion-button>
+        </div>
+        
+        <!-- Preview image if available -->
+        <div *ngIf="taskImageUrl" class="image-preview">
+          <img [src]="taskImageUrl" alt="Görev resmi">
+        </div>
+      </div>
+    </div>
+
+    <div class="info-message">
+      <ion-note>
+        <ion-icon name="information-circle-outline" color="warning"></ion-icon>
+        Görevleri silmek veya düzenlemek için sola kaydırın
+      </ion-note>
+    </div>
+    
+    <div class="tasks-container">
+      <app-todo-list
+        [todos]="incompleteTasks"
+        [title]="'Yapılacak Görevler'"
+        (statusChange)="toggleTaskStatus($event)"
+        (deleteRequest)="deleteTask($event)"
+        (editRequest)="editTask($event)"
+        (addImageRequest)="addImageToTask($event)"
+        (firebaseDeleteRequest)="deleteTaskFromFirebase($event)">
+      </app-todo-list>
+
+      <app-todo-list
+        [todos]="completedTasks"
+        [title]="'Tamamlanan Görevler'"
+        (statusChange)="toggleTaskStatus($event)"
+        (deleteRequest)="deleteTask($event)"
+        (editRequest)="editTask($event)"
+        (addImageRequest)="addImageToTask($event)"
+        (firebaseDeleteRequest)="deleteTaskFromFirebase($event)">
+      </app-todo-list>
+    </div>
+  </div>
+</ion-content>
+
+

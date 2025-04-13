@@ -1,0 +1,23 @@
+<div class="todo-list-container">
+  <div class="todo-list-header">
+    <h2>{{ title }}</h2>
+    <span class="task-count">{{ todos.length }}</span>
+  </div>
+  
+  <div class="todo-list">
+    <app-todo 
+      *ngFor="let todo of todos" 
+      [todo]="todo"
+      (statusChange)="onStatusChange($event)"
+      (deleteRequest)="onDeleteRequest($event)"
+      (editRequest)="onEditRequest($event)"
+      (addImageRequest)="onAddImageRequest($event)"
+      (firebaseDeleteRequest)="onFirebaseDeleteRequest($event)">
+    </app-todo>
+    
+    <div class="empty-state" *ngIf="todos.length === 0">
+      <ion-icon name="list-outline"></ion-icon>
+      <p>{{ title === 'Tamamlanan Görevler' ? 'Tamamlanan görev yok' : 'Yapılacak görev yok' }}</p>
+    </div>
+  </div>
+</div> 

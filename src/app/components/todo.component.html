@@ -1,0 +1,57 @@
+<ion-item-sliding class="modern-task">
+  <ion-item [class.completed-task]="todo.completed" class="task-item">
+    <ion-checkbox 
+      slot="start" 
+      [checked]="todo.completed"
+      color="warning"
+      class="task-checkbox"
+      (ionChange)="toggleStatus()">
+    </ion-checkbox>
+    <ion-label class="ion-text-wrap">
+      <h2 class="todo-title">{{ todo.title }}</h2>
+      <p *ngIf="todo.description" class="todo-description">{{ todo.description }}</p>
+      
+      <div class="todo-meta">
+        <ion-chip outline size="small" color="warning">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <ion-label>{{ todo.dueDate | date:'dd.MM.yyyy HH:mm' }}</ion-label>
+        </ion-chip>
+      </div>
+      
+      <!-- Completed task details -->
+      <div *ngIf="todo.completed" class="completed-details">
+        <ion-chip fill="solid" color="success" class="completion-chip">
+          <ion-icon name="checkmark-done"></ion-icon>
+          <ion-label>
+            <strong>Tamamlandı</strong>
+            <span *ngIf="todo.completedAt">: {{ todo.completedAt | date:'dd.MM.yyyy HH:mm' }}</span>
+            <span *ngIf="!todo.completedAt">(Tarih bilgisi yok)</span>
+          </ion-label>
+        </ion-chip>
+        
+        
+      </div>
+      
+      <div *ngIf="todo.imageUrl" class="task-image">
+        <img [src]="todo.imageUrl" alt="Görev resmi">
+      </div>
+    </ion-label>
+  </ion-item>
+  
+  <ion-item-options side="end">
+    <ng-container *ngIf="!todo.completed">
+      <ion-item-option color="medium" (click)="addImage()">
+        <ion-icon slot="icon-only" name="camera-outline"></ion-icon>
+      </ion-item-option>
+      <ion-item-option color="warning" (click)="editTodo()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-item-option>
+    </ng-container>
+    <ion-item-option color="dark" (click)="deleteTodo()">
+      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+    </ion-item-option>
+    <ion-item-option color="danger" (click)="deleteFromFirebase()">
+      <ion-icon slot="icon-only" name="cloud-offline-outline"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
+</ion-item-sliding> 
