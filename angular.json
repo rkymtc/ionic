@@ -32,8 +32,7 @@
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": [],
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -132,9 +131,6 @@
           }
         }
       }
-    },
-    "cli": {
-      "analytics": "a3a30754-adc3-4c24-a272-e28b314f33a8"
     }
   },
   "cli": {

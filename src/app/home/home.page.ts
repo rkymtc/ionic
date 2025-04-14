@@ -19,6 +19,7 @@ export class HomePage implements OnInit, OnDestroy {
   taskImageUrl?: string;
   incompleteTasks: Todo[] = [];
   completedTasks: Todo[] = [];
+  isLoading = false;
   
   private subscriptions: Subscription[] = [];
   
@@ -30,6 +31,12 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadData();
+    
+    this.subscriptions.push(
+      this.firebaseService.loading.subscribe(loading => {
+        this.isLoading = loading;
+      })
+    );
   }
   
   ngOnDestroy() {

@@ -29,8 +29,12 @@ export class FirebaseService {
   private _todos = new BehaviorSubject<Todo[]>([]);
   public todos = this._todos.asObservable();
   
+  private _loading = new BehaviorSubject<boolean>(true);
+  public loading = this._loading.asObservable();
+  
   constructor() {
     try {
+      this._loading.next(true);
       this.app = initializeApp(firebaseConfig);
       this.analytics = getAnalytics(this.app);
       this.database = getDatabase(this.app);
@@ -39,6 +43,7 @@ export class FirebaseService {
     } catch (error) {
       console.error('Firebase initialization error:', error);
       this.firebaseAvailable = false;
+      this._loading.next(false);
     }
   }
 
@@ -53,9 +58,13 @@ export class FirebaseService {
     const todosRef = ref(this.database, collectionName);
     onValue(todosRef, (snapshot) => {
       this.handleFirebaseData(snapshot.val(), isCompleted);
+      if (isCompleted) {
+        this._loading.next(false);
+      }
     }, (error) => {
       console.error(`Firebase ${collectionName} access error:`, error);
       this.firebaseAvailable = false;
+      this._loading.next(false);
     });
   }
   
@@ -100,10 +109,13 @@ export class FirebaseService {
     this.checkFirebaseAvailability();
     
     try {
+      this._loading.next(true);
       return await operation();
     } catch (error) {
       console.error(`${errorMessage}:`, error);
       throw error;
+    } finally {
+      this._loading.next(false);
     }
   }
 

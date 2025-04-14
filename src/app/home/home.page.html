@@ -7,11 +7,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding-bottom">
-  <ion-header collapse="condense">
-    <ion-toolbar color="dark">
-      <ion-title size="large" class="ion-text-center">Görev Yönetici</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  
+  <div class="firebase-loader" *ngIf="isLoading">
+    <div class="loader-content">
+      <ion-spinner name="crescent" color="warning"></ion-spinner>
+      <p>Firebase ile iletişim kuruluyor...</p>
+      <p class="operation-text">Lütfen bekleyin</p>
+    </div>
+  </div>
 
   <div class="content-container">
     <div class="add-task-container">
@@ -70,7 +73,6 @@
           </ion-button>
         </div>
         
-        <!-- Preview image if available -->
         <div *ngIf="taskImageUrl" class="image-preview">
           <img [src]="taskImageUrl" alt="Görev resmi">
         </div>

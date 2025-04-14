@@ -25,8 +25,6 @@ export class TodoComponent extends BaseTodoComponent {
   }
 
   toggleStatus(): void {
-    // console.log(' todo:', this.todo);
-  
     
     if (!this.todo.completed) {
       this.todo.completedAt = new Date();
