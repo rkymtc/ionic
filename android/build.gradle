@@ -23,13 +23,11 @@ allprojects {
         mavenCentral()
     }
     
-    // Force all projects to use Java 17
     tasks.withType(JavaCompile) {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
     
-    // Force all Android projects to use Java 17
     afterEvaluate { project ->
         if (project.hasProperty('android')) {
             project.android.compileOptions {

@@ -16,7 +16,6 @@ const config: CapacitorConfig = {
   },
   plugins: {
     Camera: {
-      // iOS camera config
       useLegacyPhotoLibrary: false,
       presentationStyle: 'fullScreen'
     }

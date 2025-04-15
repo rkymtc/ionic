@@ -97,9 +97,6 @@ export class HomePage implements OnInit, OnDestroy {
       try {
         const imageUrl = await this.firebaseService.takePicture();
         this.taskImageUrl = imageUrl || this.taskImageUrl;
-        if (!imageUrl) {
-          console.log('Placeholder image used instead of camera');
-        }
       } catch (error) {
         console.error('Image capture error:', error);
         throw new Error('Resim alınamadı: ' + (error instanceof Error ? error.message : String(error)));
@@ -114,8 +111,6 @@ export class HomePage implements OnInit, OnDestroy {
         if (imageUrl) {
           await this.firebaseService.updateTodoImage(task.id, imageUrl);
         } else {
-          console.log('Placeholder image used for task');
-          // Simülatörde olduğumuzda bir hata fırlatmak yerine placeholder kullanıyoruz
           await this.firebaseService.updateTodoImage(task.id, 
             'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAXUlEQVR42u3BAQ0AAADCoPdPbQ8HFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALA3ZCAAAbT8Bb0AAAAASUVORK5CYII=');
         }

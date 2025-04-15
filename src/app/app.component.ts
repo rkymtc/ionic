@@ -22,7 +22,6 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       SplashScreen.hide().catch(err => {
-        console.warn('Error hiding splash screen:', err);
       });
     });
   }
