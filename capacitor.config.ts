@@ -5,7 +5,21 @@ const config: CapacitorConfig = {
   appName: 'todo-app',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    iosScheme: 'https'
+  },
+  ios: {
+    contentInset: 'always',
+    scheme: 'app',
+    limitsNavigationsToAppBoundDomains: true,
+    preferredContentMode: 'mobile'
+  },
+  plugins: {
+    Camera: {
+      // iOS camera config
+      useLegacyPhotoLibrary: false,
+      presentationStyle: 'fullScreen'
+    }
   }
 };
 

@@ -145,20 +145,99 @@ export class FirebaseService {
 
   async takePicture(): Promise<string | undefined> {
     try {
-      await Camera.checkPermissions();
+      // Önce simülatör kontrolü - tam algılama
+      if (this.isProbablySimulator()) {
+        console.log('Simülatör tespit edildi, placeholder görüntü dönülüyor');
+        return this.getPlaceholderImage();
+      }
+
+      // İzinleri kontrol et
+      const permissionStatus = await Camera.checkPermissions();
+      console.log('Kamera izinleri:', permissionStatus);
       
+      // İzinler yeterli değilse, izin iste
+      if (permissionStatus.camera !== 'granted' || permissionStatus.photos !== 'granted') {
+        console.log('Kamera veya fotoğraf izinleri eksik, izin isteniyor');
+        const requestedPermissions = await Camera.requestPermissions({
+          permissions: ['camera', 'photos']
+        });
+        console.log('İzin isteme sonucu:', requestedPermissions);
+        
+        // İzinler hala yoksa placeholder dön
+        if (requestedPermissions.camera !== 'granted') {
+          console.log('Kamera izni verilmedi, placeholder döndürülüyor');
+          return this.getPlaceholderImage();
+        }
+      }
+      
+      // Kamera veya fotoğraf kütüphanesi kullanmayı dene
       const image = await Camera.getPhoto({
         quality: 90,
         allowEditing: true,
         resultType: CameraResultType.DataUrl,
-        source: CameraSource.Camera
+        source: this.isIOS() ? CameraSource.Photos : CameraSource.Camera,
+        width: 600
       });
       
       return image.dataUrl;
-    } catch (error) {
-      console.error('Camera access error:', error);
-      return undefined;
+    } catch (error: any) {
+      console.log('Kamera erişimi hatası, placeholder görüntü dönülüyor:', error);
+      return this.getPlaceholderImage();
     }
+  }
+  
+  private isProbablySimulator(): boolean {
+    // Gelişmiş simülatör tespiti
+    try {
+      // 1. Capacitor API'sini kullanarak platform kontrolü
+      const platform = (window as any)?.Capacitor?.getPlatform?.();
+      const isNative = (window as any)?.Capacitor?.isNativePlatform?.();
+      
+      console.log('Platform tespiti:', platform, 'Gerçek cihaz mı:', isNative);
+      
+      // Web platformu her zaman simülatör kabul edilir
+      if (platform === 'web') {
+        return true;
+      }
+      
+      // Gerçek cihaz olmayan iOS platformu (simülatör)
+      if (platform === 'ios' && isNative === false) {
+        return true;
+      }
+      
+      // 2. User Agent kontrolü - daha geleneksel yöntem
+      const userAgent = navigator.userAgent.toLowerCase();
+      if ((/iphone|ipad|ipod/.test(userAgent) && /mac/.test(userAgent)) || 
+          userAgent.includes('xcode')) {
+        return true;
+      }
+      
+      // 3. MediaDevices API kontrolü - simülatörlerde genelde eksiktir
+      if (!navigator.mediaDevices) {
+        return true;
+      }
+      
+      return false;
+    } catch (err) {
+      console.log('Simülatör kontrolünde hata:', err);
+      // Hata durumunda güvenlik için simülatör kabul et
+      return true;
+    }
+  }
+  
+  private isIOS(): boolean {
+    try {
+      const platform = (window as any)?.Capacitor?.getPlatform?.();
+      return platform === 'ios';
+    } catch (err) {
+      // Fallback to user agent check
+      return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+    }
+  }
+  
+  private getPlaceholderImage(): string {
+    // Daha güzel bir placeholder - açık mavi kare
+    return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAMAAABHPGVmAAAAWlBMVEX///8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru+16-TmAAAAHXRSTlMAECAwQFBgcICQoLDA0ODw/0CAEGCgsNDg8P+gwKNr4cYAAAEASURBVGje7dnLDoIwEIXhQaqgchUvKIrv/5pq4oaF2jZMOgvP/xY24Utnegq1Wq1Wq9V+oWmaN1qtjcShlUgcW4nEqZVInFuJRGklEjeJRLmXSKzPEokylkjcryUSN4nEXSJRJhKJMpVIPCQS5SkR6F3fz0lZ1rMoipnvuNRXk1X1e5LmWT7xFIeq3YiSNEnSscP0RbsNXYfdbjcM7N71YtEurCzL0ktYdC4L8+wjLD2TZdnrK9ZOZGHs9r/YeiorDHSxbiurDDzFkrmse8sBYpmsdrTYeDBrjj0gxrK+6vQhspZ1ui4fQ1uwvuD4SbUF6yPOH3X7D8v+cGC1Wq1Wq9W+0wvrBhENlcXK9QAAAABJRU5ErkJggg==';
   }
 
   async updateTodo(id: number, updates: Partial<Todo>): Promise<void> {
